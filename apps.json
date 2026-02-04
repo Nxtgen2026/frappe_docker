@@ -12,6 +12,10 @@
  "branch": "version-15"
 },
 {
+ "url": "https://Teqsys-erp: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@github.com/Teqsys-erp/TEQSYS-HR.git",
+ "branch": "main"
+},
+{
  "url": "https://github.com/Teqsys-erp/material_theme.git",
  "branch": "main"
 }
