@@ -113,14 +113,17 @@ RUN if [ -n "${APPS_JSON_BASE64}" ]; then \
     mkdir /opt/frappe && echo "${APPS_JSON_BASE64}" | base64 -d > /opt/frappe/apps.json; \
   fi
 
-# ✅ ADD THIS: Accept GitHub token for private repos
+# ✅ Accept GitHub token for private repos
 ARG GITHUB_TOKEN
 
+# ✅ CRITICAL FIX: Switch to frappe user BEFORE configuring git
 USER frappe
 
-# ✅ ADD THIS: Configure git to use the token BEFORE bench init
+# ✅ Configure git credentials as the frappe user
 RUN if [ -n "${GITHUB_TOKEN}" ]; then \
-    git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"; \
+    git config --global credential.helper store && \
+    echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > /home/frappe/.git-credentials && \
+    chmod 600 /home/frappe/.git-credentials; \
   fi
 
 ARG FRAPPE_BRANCH=version-15
@@ -141,10 +144,9 @@ RUN export APP_INSTALL_ARGS="" && \
   echo "{}" > sites/common_site_config.json && \
   find apps -mindepth 1 -path "*/.git" | xargs rm -fr
 
-# ✅ ADD THIS: Clean up git config after apps are installed
-RUN if [ -n "${GITHUB_TOKEN}" ]; then \
-    git config --global --unset url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf || true; \
-  fi
+# ✅ Clean up credentials after installation
+RUN rm -f /home/frappe/.git-credentials && \
+    git config --global --unset credential.helper || true
 
 FROM base AS backend
 
