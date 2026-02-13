@@ -116,7 +116,7 @@ RUN if [ -n "${APPS_JSON_BASE64}" ]; then \
 # ✅ Accept GitHub token for private repos
 ARG GITHUB_TOKEN
 
-# ✅ CRITICAL FIX: Switch to frappe user BEFORE configuring git
+# ✅ CRITICAL: Switch to frappe user BEFORE configuring git
 USER frappe
 
 # ✅ Configure git credentials as the frappe user
