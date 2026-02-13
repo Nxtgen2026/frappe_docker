@@ -1,13 +1,13 @@
-ARG PYTHON_VERSION=3.11.6
+ARG PYTHON_VERSION=3.14.2
 ARG DEBIAN_BASE=bookworm
 FROM python:${PYTHON_VERSION}-slim-${DEBIAN_BASE} AS base
 
-COPY resources/nginx-template.conf /templates/nginx/frappe.conf.template
-COPY resources/nginx-entrypoint.sh /usr/local/bin/nginx-entrypoint.sh
+COPY resources/core/nginx/nginx-template.conf /templates/nginx/frappe.conf.template
+COPY resources/core/nginx/nginx-entrypoint.sh /usr/local/bin/nginx-entrypoint.sh
 
 ARG WKHTMLTOPDF_VERSION=0.12.6.1-3
 ARG WKHTMLTOPDF_DISTRO=bookworm
-ARG NODE_VERSION=20.19.2
+ARG NODE_VERSION=24.13.0
 ENV NVM_DIR=/home/frappe/.nvm
 ENV PATH=${NVM_DIR}/versions/node/v${NODE_VERSION}/bin/:${PATH}
 
@@ -113,20 +113,9 @@ RUN if [ -n "${APPS_JSON_BASE64}" ]; then \
     mkdir /opt/frappe && echo "${APPS_JSON_BASE64}" | base64 -d > /opt/frappe/apps.json; \
   fi
 
-# ✅ Accept GitHub token for private repos
-ARG GITHUB_TOKEN
-
-# ✅ CRITICAL: Switch to frappe user BEFORE configuring git
 USER frappe
 
-# ✅ Configure git credentials as the frappe user
-RUN if [ -n "${GITHUB_TOKEN}" ]; then \
-    git config --global credential.helper store && \
-    echo "https://x-access-token:${GITHUB_TOKEN}@github.com" > /home/frappe/.git-credentials && \
-    chmod 600 /home/frappe/.git-credentials; \
-  fi
-
-ARG FRAPPE_BRANCH=version-15
+ARG FRAPPE_BRANCH=version-16
 ARG FRAPPE_PATH=https://github.com/frappe/frappe
 RUN export APP_INSTALL_ARGS="" && \
   if [ -n "${APPS_JSON_BASE64}" ]; then \
@@ -143,10 +132,6 @@ RUN export APP_INSTALL_ARGS="" && \
   cd /home/frappe/frappe-bench && \
   echo "{}" > sites/common_site_config.json && \
   find apps -mindepth 1 -path "*/.git" | xargs rm -fr
-
-# ✅ Clean up credentials after installation
-RUN rm -f /home/frappe/.git-credentials && \
-    git config --global --unset credential.helper || true
 
 FROM base AS backend
 
