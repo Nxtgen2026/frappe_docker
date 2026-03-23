@@ -1,22 +1,22 @@
 [
-{
-"url": "https://github.com/Teqsys-erp/erpnext.git",
-"branch": "version-15"
-},
-{
-"url": "https://github.com/Teqsys-erp/hrms.git",
-"branch": "version-15"
-},
-{
- "url": "https://github.com/frappe/lending.git",
- "branch": "version-15"
-},
-{
- "url": "https://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@github.com/Teqsys-erp/Vantageo-Teqsys-Rvs.git",
- "branch": "main"
-},
-{
- "url": "https://github.com/Teqsys-erp/material_theme.git",
- "branch": "main"
-}
+  {
+    "url": "https://github.com/Teqsys-erp/erpnext.git",
+    "branch": "version-15"
+  },
+  {
+    "url": "https://github.com/Teqsys-erp/hrms.git",
+    "branch": "version-15"
+  },
+  {
+    "url": "https://github.com/frappe/lending.git",
+    "branch": "version-15"
+  },
+  {
+    "url": "https://github.com/Teqsys-erp/Vantageo-Teqsys-Rvs.git",
+    "branch": "main"
+  },
+  {
+    "url": "https://github.com/Teqsys-erp/material_theme.git",
+    "branch": "main"
+  }
 ]
